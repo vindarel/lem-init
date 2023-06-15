@@ -24,6 +24,7 @@ $ cd lem/
 
 * M-j newline with comment (if inside comment)
 * M-h select paragraph
+* imenu functionnality
 
 In Lisp mode:
  * C-~ sync file package with REPL
