@@ -29,6 +29,7 @@ $ cd lem/
 In Lisp mode:
  * C-~ sync file package with REPL
  * C-c C-y call function at point in the REPL, with package prefix.
+ * REPL: C-c C-p go to previous prompt. M-p works.
 
 In vi-mode:
 * OK now, some keys sent upstream.
@@ -241,6 +242,16 @@ check buffer name exists as a file.
 
 (define-command oif () ()
   (open-init-file))
+
+```
+### Open PDF files with an external program
+
+```lisp
+
+(defmethod lem-core/commands/file:execute-find-file :around (executor mode pathname)
+  (if (find (pathname-type pathname) '("pdf"))
+      (open-external-file pathname)
+      (call-next-method)))
 
 ```
 
