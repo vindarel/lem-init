@@ -237,6 +237,9 @@ NB: I had to tweak cl-template's .asd definition to `:cl-template` instead of `#
 * https://gitlab.com/sasanidas/lem-config/-/blob/master/init.lisp
 
 |#
+
+;; Transparent background! ^^
+(sdl2-ffi.functions:sdl-set-window-opacity (lem-sdl2::display-window lem-sdl2::*display*) 0.9)
 ;; A very poor man's imenu.
 (defun buffer-headings (txt)
   (loop for line in (str:lines txt)
