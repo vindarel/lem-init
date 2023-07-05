@@ -125,7 +125,7 @@ Issues in Lem 2.0:
 (define-key *global-keymap* "C-n" 'lem/abbrev:abbrev-with-pop-up-window)
 
 ;;
-;; ## More keys of my liking
+;; ## More keys of my liking (bépo keybboard)
 ;;
 ;; Most make sense for a bépo keyboard only.
 (define-key lem-vi-mode:*command-keymap*
@@ -157,6 +157,18 @@ Issues in Lem 2.0:
 (define-key lem-vi-mode:*command-keymap*
   "M-«"
   'move-to-beginning-of-buffer)
+
+(define-key *global-keymap*
+  "C-x \""
+  'lem-core/commands/window:delete-other-windows)
+
+(define-key *global-keymap*
+  "C-x »"
+  'lem-core/commands/window:split-active-window-horizontally)
+
+(define-key *global-keymap*
+  "C-x «"
+  'lem-core/commands/window:split-active-window-vertically)
 
 ;;; vi visual mode
 (define-key lem-vi-mode/visual::*visual-keymap*
