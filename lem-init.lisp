@@ -24,7 +24,7 @@ $ cd lem/
 
 * M-j newline with comment (if inside comment)
 * M-h select paragraph
-* imenu functionnality
+* imenu functionality => see very poor but useful snippet below.
 
 In Lisp mode:
  * C-~ sync file package with REPL
@@ -231,3 +231,29 @@ NB: I had to tweak cl-template's .asd definition to `:cl-template` instead of `#
 * https://gitlab.com/sasanidas/lem-config/-/blob/master/init.lisp
 
 |#
+;; A very poor man's imenu.
+(defun buffer-headings (txt)
+  (loop for line in (str:lines txt)
+      for parts = (str:split " " line)
+      for i = 1 then (incf i)
+      if (str:starts-with-p "(def" line)
+      ;; collect (list line i))
+        collect line))
+
+(defun prompt-for-heading ()
+  (let ((candidates (buffer-headings (buffer-text (current-buffer)))))
+    (if candidates
+        (prompt-for-string "Heading: "
+                            :history-symbol '*imenu*
+                            :completion-function (lambda (x)
+                                                   (completion-strings x candidates))
+                            :test-function (lambda (name)
+                                             (member name candidates :test #'string=))))))
+
+(define-command imenu () ()
+  (let ((candidate (prompt-for-heading)))
+    (move-to-beginning-of-buffer)
+    (search-forward (current-point) candidate)
+    (message "~a" candidate)))
+
+(define-key *global-keymap* "C-x i" 'imenu)
