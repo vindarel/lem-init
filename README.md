@@ -24,12 +24,15 @@ $ cd lem/
 
 * M-j newline with comment (if inside comment)
 * M-h select paragraph
-* imenu functionnality
+* imenu functionality => see very poor but useful snippet below.
 
 In Lisp mode:
  * C-~ sync file package with REPL
  * C-c C-y call function at point in the REPL, with package prefix.
- * REPL: C-c C-p go to previous prompt. M-p works.
+ * REPL: C-c C-p go to previous prompt => done in main (end of June, 2023)
+ * Inspecting literal objects => done in main (end of June, 2023)
+ * marks (m <letter> and '<letter> (quote))
+ * little issue with highlighting of parens in vi insert mode, on the last paren.
 
 In vi-mode:
 * OK now, some keys sent upstream.
@@ -38,8 +41,11 @@ Issues in Lem 2.0:
 * I can't type backslash or any key with Alt Gr (right Alt key) => fixed upstream
 * typing an accentuated letter (french é) ppriints sa spacee after it and sorta repaeat keys O_o
 
-Nice to have:
-* inside M-: be able to use M-. to go to definition.
+## Things than Lem does better than Emacs
+
+* default auto-completion UI (but not the algorithm yet)
+* ease of development for CL, commands discovery
+* sorting files by name, mtime AND by size (with human-readable format) in directory-mode
 
 ## Load more CL libraries
 We want some more CL libraries.
@@ -69,11 +75,14 @@ Start in vi-mode
 ```
 
 ## Some helper functions, bound to keys below.
+I want quick movement functions to go to the previous or next definition (function, or anything really).
+Lem has beginning- and end-of-defun, but a repetitive call doesn't go outside the function definition.
 
 ```lisp
 (define-command beginning-of-defun-on-function (n) ("p")
   "Go to the beginning of defun, the point on the function name."
   ; if n < 0, go to end of defun.
+  (previous-line)
   (lem/language-mode::beginning-of-defun-1 n)
   (lem-vi-mode/word:forward-word-end (current-point) n t)
   (skip-whitespace-forward (current-point) t))
@@ -81,6 +90,21 @@ Start in vi-mode
 (define-key lem-vi-mode:*command-keymap*
   "g a"
   'beginning-of-defun-on-function)
+```
+'lem/detective:detective-search)  ;; <2023-07-05 Wed> detective doesn't currently work with define-command and define-key definitions.
+
+```lisp
+
+(define-command end-of-defun-on-function (n) ("p")
+  "Go to the next defun, the point on the function name."
+  (lem/language-mode::end-of-defun n)
+  (search-forward-regexp (current-point) "^\\(")
+  (lem-vi-mode/word:forward-word-end (current-point) n t)
+  (skip-whitespace-forward (current-point) t))
+
+(define-key lem-vi-mode:*command-keymap*
+  "g e"
+  'end-of-defun-on-function)
 
 ```
 <2023-05-25 Thu>
@@ -131,7 +155,7 @@ It is originally bound to next-line, in vi-mode too.
 
 ```
 
-## More keys of my liking
+## More keys of my liking (bépo keybboard)
 
 Most make sense for a bépo keyboard only.
 
@@ -172,6 +196,18 @@ go to end of buffer
   "M-«"
   'move-to-beginning-of-buffer)
 
+(define-key *global-keymap*
+  "C-x \""
+  'lem-core/commands/window:delete-other-windows)
+
+(define-key *global-keymap*
+  "C-x »"
+  'lem-core/commands/window:split-active-window-horizontally)
+
+(define-key *global-keymap*
+  "C-x «"
+  'lem-core/commands/window:split-active-window-vertically)
+
 ```
 vi visual mode
 
@@ -209,6 +245,15 @@ Currently not bound to a key. The Filer (C-x d) opens the root though.
   'lem-core/commands/project:project-find-file)
 
 ```
+Undo:
+this doesn't work, it understands C-space.
+
+```lisp
+(define-key *global-keymap*
+  "C-_"
+  'undo)
+
+```
 ## Dev
 
 ```lisp
@@ -231,6 +276,40 @@ check buffer name exists as a file.
   'find-directory-buffer)
 
 ```
+### imenu
+A very poor man's imenu.
+
+```lisp
+(defun buffer-headings (txt)
+  (loop for line in (str:lines txt)
+      for parts = (str:split " " line)
+      for i = 1 then (incf i)
+      if (str:starts-with-p "(def" line)
+```
+collect (list line i))
+
+```lisp
+        collect line))
+
+(defun prompt-for-heading ()
+  (let ((candidates (buffer-headings (buffer-text (current-buffer)))))
+    (if candidates
+        (prompt-for-string "Heading: "
+                            :history-symbol '*imenu*
+                            :completion-function (lambda (x)
+                                                   (completion-strings x candidates))
+                            :test-function (lambda (name)
+                                             (member name candidates :test #'string=))))))
+
+(define-command imenu () ()
+  (let ((candidate (prompt-for-heading)))
+    (move-to-beginning-of-buffer)
+    (search-forward (current-point) candidate)
+    (message "~a" candidate)))
+
+(define-key *global-keymap* "C-x i" 'imenu)
+
+```
 
 ## Misc
 
@@ -249,9 +328,21 @@ check buffer name exists as a file.
 ```lisp
 
 (defmethod lem-core/commands/file:execute-find-file :around (executor mode pathname)
-  (if (find (pathname-type pathname) '("pdf"))
+  (if (find (pathname-type pathname) '("pdf" "mp4" ".mp4") :test #'equal)
       (open-external-file pathname)
       (call-next-method)))
+
+```
+### Transparent background! ^^
+
+```lisp
+(sdl2-ffi.functions:sdl-set-window-opacity (lem-sdl2::display-window lem-sdl2::*display*) 0.9)
+
+```
+I want to see my logs on the terminal output:
+
+```lisp
+(log:config :info)
 
 ```
 

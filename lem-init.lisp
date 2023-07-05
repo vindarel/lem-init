@@ -237,46 +237,7 @@ Issues in Lem 2.0:
   "C-x C-j"
   'find-directory-buffer)
 
-;;;
-;;; ## Misc
-;;;
-(define-command open-init-file () ()
-  ; thx @sasanidas
-  (lem:find-file
-   (merge-pathnames "init.lisp" (lem-home))))
-
-(define-command oif () ()
-  (open-init-file))
-
-;; ### Open PDF files with an external program
-
-(defmethod lem-core/commands/file:execute-find-file :around (executor mode pathname)
-  (if (find (pathname-type pathname) '("pdf" "mp4" ".mp4") :test #'equal)
-      (open-external-file pathname)
-      (call-next-method)))
-
-#|
-## Erudite: produce this README.md
-
-The command required to produce the readme is:
-
-@verbatim
-(erudite:erudite #p"README.md" "lem-init.lisp" :output-type :markdown :syntax :erudite)
-@end verbatim
-
-NB: I had to tweak cl-template's .asd definition to `:cl-template` instead of `#:cl-template`.
-
-## See also
-
-* https://gitlab.com/sasanidas/lem-config/-/blob/master/init.lisp
-
-|#
-
-;; Transparent background! ^^
-(sdl2-ffi.functions:sdl-set-window-opacity (lem-sdl2::display-window lem-sdl2::*display*) 0.9)
-
-;; I want to see my logs on the terminal output:
-(log:config :info)
+;; ### imenu
 
 ;; A very poor man's imenu.
 (defun buffer-headings (txt)
@@ -304,3 +265,44 @@ NB: I had to tweak cl-template's .asd definition to `:cl-template` instead of `#
     (message "~a" candidate)))
 
 (define-key *global-keymap* "C-x i" 'imenu)
+
+;;;
+;;; ## Misc
+;;;
+(define-command open-init-file () ()
+  ; thx @sasanidas
+  (lem:find-file
+   (merge-pathnames "init.lisp" (lem-home))))
+
+(define-command oif () ()
+  (open-init-file))
+
+;; ### Open PDF files with an external program
+
+(defmethod lem-core/commands/file:execute-find-file :around (executor mode pathname)
+  (if (find (pathname-type pathname) '("pdf" "mp4" ".mp4") :test #'equal)
+      (open-external-file pathname)
+      (call-next-method)))
+
+;; ### Transparent background! ^^
+(sdl2-ffi.functions:sdl-set-window-opacity (lem-sdl2::display-window lem-sdl2::*display*) 0.9)
+
+;; I want to see my logs on the terminal output:
+(log:config :info)
+
+#|
+## Erudite: produce this README.md
+
+The command required to produce the readme is:
+
+@verbatim
+(erudite:erudite #p"README.md" "lem-init.lisp" :output-type :markdown :syntax :erudite)
+@end verbatim
+
+NB: I had to tweak cl-template's .asd definition to `:cl-template` instead of `#:cl-template`.
+
+## See also
+
+* https://gitlab.com/sasanidas/lem-config/-/blob/master/init.lisp
+
+|#
