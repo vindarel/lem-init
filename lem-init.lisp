@@ -290,6 +290,12 @@ Issues in Lem 2.0:
 ;; I want to see my logs on the terminal output:
 (log:config :info)
 
+;; Load a utility from another file, too short for a PR:
+(load "~/dotfiles/lem/time-stamp.lisp")
+
+;; Now you can do M-x time-stamp to print the timestamp of the day, in the org-mode format:
+;; <2023-07-05 Wed>
+
 #|
 ## Erudite: produce this README.md
 
