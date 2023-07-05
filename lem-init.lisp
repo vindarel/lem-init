@@ -29,7 +29,10 @@ $ cd lem/
 In Lisp mode:
  * C-~ sync file package with REPL
  * C-c C-y call function at point in the REPL, with package prefix.
- * REPL: C-c C-p go to previous prompt. M-p works.
+ * REPL: C-c C-p go to previous prompt => done in main (end of June, 2023)
+ * Inspecting literal objects => done in main (end of June, 2023)
+ * marks (m <letter> and '<letter> (quote))
+ * little issue with highlighting of parens in vi insert mode, on the last paren.
 
 In vi-mode:
 * OK now, some keys sent upstream.
@@ -38,8 +41,11 @@ Issues in Lem 2.0:
 * I can't type backslash or any key with Alt Gr (right Alt key) => fixed upstream
 * typing an accentuated letter (french é) ppriints sa spacee after it and sorta repaeat keys O_o
 
-Nice to have:
-* inside M-: be able to use M-. to go to definition.
+## Things than Lem does better than Emacs
+
+* default auto-completion UI (but not the algorithm yet)
+* ease of development for CL, commands discovery
+* sorting files by name, mtime AND by size (with human-readable format) in directory-mode
 
 |#
 
