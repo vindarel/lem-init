@@ -187,6 +187,12 @@ Issues in Lem 2.0:
   "C-x p f"
   'lem-core/commands/project:project-find-file)
 
+;; Undo:
+;; this doesn't work, it understands C-space.
+(define-key *global-keymap*
+  "C-_"
+  'undo)
+
 ;; ## Dev
 (define-command find-directory-buffer () ()
   (let ((name (buffer-filename)))
