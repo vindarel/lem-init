@@ -75,9 +75,13 @@ Issues in Lem 2.0:
 ;;;
 ;;; ## Some helper functions, bound to keys below.
 ;;;
+
+;; I want quick movement functions to go to the previous or next definition (function, or anything really).
+;; Lem has beginning- and end-of-defun, but a repetitive call doesn't go outside the function definition.
 (define-command beginning-of-defun-on-function (n) ("p")
   "Go to the beginning of defun, the point on the function name."
   ; if n < 0, go to end of defun.
+  (previous-line)
   (lem/language-mode::beginning-of-defun-1 n)
   (lem-vi-mode/word:forward-word-end (current-point) n t)
   (skip-whitespace-forward (current-point) t))
@@ -85,6 +89,18 @@ Issues in Lem 2.0:
 (define-key lem-vi-mode:*command-keymap*
   "g a"
   'beginning-of-defun-on-function)
+  ;; 'lem/detective:detective-search)  ;; <2023-07-05 Wed> detective doesn't currently work with define-command and define-key definitions.
+
+(define-command end-of-defun-on-function (n) ("p")
+  "Go to the next defun, the point on the function name."
+  (lem/language-mode::end-of-defun n)
+  (search-forward-regexp (current-point) "^\\(")
+  (lem-vi-mode/word:forward-word-end (current-point) n t)
+  (skip-whitespace-forward (current-point) t))
+
+(define-key lem-vi-mode:*command-keymap*
+  "g e"
+  'end-of-defun-on-function)
 
 ;; <2023-05-25 Thu>
 ;; vi-mode doesn't have "+" and "-" keys => sent upstream.
