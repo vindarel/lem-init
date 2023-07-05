@@ -217,7 +217,7 @@ Issues in Lem 2.0:
 ;; ### Open PDF files with an external program
 
 (defmethod lem-core/commands/file:execute-find-file :around (executor mode pathname)
-  (if (find (pathname-type pathname) '("pdf"))
+  (if (find (pathname-type pathname) '("pdf" "mp4" ".mp4") :test #'equal)
       (open-external-file pathname)
       (call-next-method)))
 
