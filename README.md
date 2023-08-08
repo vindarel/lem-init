@@ -271,14 +271,6 @@ vi visual mode
 ## Project
 
 Project-aware commands (M-x project-find-file) sent upstream!
-Currently not bound to a key. The Filer (C-x d) opens the root though.
-
-```lisp
-(define-key *global-keymap*
-  "C-x p f"
-  'lem-core/commands/project:project-find-file)
-
-```
 Undo:
 this doesn't work, it understands C-space.
 
