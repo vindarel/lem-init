@@ -10,6 +10,7 @@ Impressions:
 * Lem has a shitload of features! paredit, tabs, treeview, tetris…
 * very nice to discover commands in Lem itself.
 * very nice for CL, only a few keys missing. Advanced debugger.
+* **Lem has a new git interface!** that I started developping. See changes, stage a file, the hunk of a diff, interactive rebase for the best scenario… cool but needs loads of work.
 
 Installation:
 copy or symlink to ~/.lem/init.lisp
@@ -312,6 +313,9 @@ Issues in Lem 2.0:
 
 ;; I want to see my logs on the terminal output:
 (log:config :info)
+
+;; Load legit. It is not loaded by default, waiting for power testers.
+(ql:quickload "lem/legit")
 
 ;; Load a utility from another file, too short for a PR:
 (load "~/dotfiles/lem/time-stamp.lisp")
