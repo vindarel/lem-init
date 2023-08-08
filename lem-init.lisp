@@ -195,6 +195,25 @@ Issues in Lem 2.0:
 (define-key *global-keymap* "C-PageUp"
   'lem/frame-multiplexer:frame-multiplexer-prev)
 
+;;; A function I use a lot, proposed upstream but not (yet) merged.
+;;; https://github.com/lem-project/lem/pull/868
+(define-key *global-keymap* "C-x C-j" 'find-file-directory)
+
+(define-command find-file-directory () ()
+  "Open this file's directory and place point on the filename."
+  (let ((fullpath (buffer-filename)))
+    (cond
+      ((null fullpath)
+       (message "No file at point"))
+      (t
+       (switch-to-buffer
+        (find-file-buffer (lem-core/commands/file::directory-for-file-or-lose (buffer-directory))))
+       (let ((filename (file-namestring fullpath)))
+         (search-forward (current-point) filename)
+         (window-recenter (current-window))
+         (character-offset (current-point) (* -1 (length filename))))))))
+
+
 ;;; vi visual mode
 (define-key lem-vi-mode/visual::*visual-keymap*
   "x"
