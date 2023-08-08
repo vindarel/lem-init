@@ -215,6 +215,17 @@ go to end of buffer
   "C-x «"
   'lem-core/commands/window:split-active-window-vertically)
 
+(define-key *global-keymap*
+  "F6"
+  'lem/language-mode::comment-or-uncomment-region)
+
+(define-key *global-keymap*
+  "M-s"
+  'previous-line)
+(define-key *global-keymap*
+  "M-t"
+  'next-line)
+
 (define-key *global-keymap* "C-PageDown"
   'lem/frame-multiplexer:frame-multiplexer-next)
 
@@ -222,6 +233,7 @@ go to end of buffer
   'lem/frame-multiplexer:frame-multiplexer-prev)
 
 ```
+## Find file directory
 A function I use a lot, proposed upstream but not (yet) merged.
 https://github.com/lem-project/lem/pull/868
 
@@ -253,22 +265,6 @@ vi visual mode
 
 ```
 
-## Global keymap
-
-```lisp
-(define-key *global-keymap*
-  "F6"
-  'lem/language-mode::comment-or-uncomment-region)
-
-(define-key *global-keymap*
-  "M-s"
-  'previous-line)
-(define-key *global-keymap*
-  "M-t"
-  'next-line)
-
-```
-
 ## Project
 
 Project-aware commands (M-x project-find-file) sent upstream!
@@ -279,28 +275,6 @@ this doesn't work, it understands C-space.
 (define-key *global-keymap*
   "C-_"
   'undo)
-
-```
-## Dev
-
-```lisp
-(define-command find-directory-buffer () ()
-  (let ((name (buffer-filename)))
-    (and
-     (switch-to-buffer
-      (find-file-buffer (lem-core/commands/file::directory-for-file-or-lose (buffer-directory))))
-```
-check buffer name exists as a file.
-
-```lisp
-     (when name
-       (search-forward (current-point) name)
-       (window-recenter (current-window))
-       (backward-char (length name))))))
-
-(define-key *global-keymap*
-  "C-x C-j"
-  'find-directory-buffer)
 
 ```
 ### imenu

@@ -190,11 +190,24 @@ Issues in Lem 2.0:
   "C-x «"
   'lem-core/commands/window:split-active-window-vertically)
 
+(define-key *global-keymap*
+  "F6"
+  'lem/language-mode::comment-or-uncomment-region)
+
+(define-key *global-keymap*
+  "M-s"
+  'previous-line)
+(define-key *global-keymap*
+  "M-t"
+  'next-line)
+
 (define-key *global-keymap* "C-PageDown"
   'lem/frame-multiplexer:frame-multiplexer-next)
 
 (define-key *global-keymap* "C-PageUp"
   'lem/frame-multiplexer:frame-multiplexer-prev)
+
+;; ## Find file directory
 
 ;;; A function I use a lot, proposed upstream but not (yet) merged.
 ;;; https://github.com/lem-project/lem/pull/868
@@ -221,20 +234,6 @@ Issues in Lem 2.0:
   'lem:kill-region)
 
 ;;;
-;;; ## Global keymap
-;;;
-(define-key *global-keymap*
-  "F6"
-  'lem/language-mode::comment-or-uncomment-region)
-
-(define-key *global-keymap*
-  "M-s"
-  'previous-line)
-(define-key *global-keymap*
-  "M-t"
-  'next-line)
-
-;;;
 ;;; ## Project
 ;;;
 ;;; Project-aware commands (M-x project-find-file) sent upstream!
@@ -244,22 +243,6 @@ Issues in Lem 2.0:
 (define-key *global-keymap*
   "C-_"
   'undo)
-
-;; ## Dev
-(define-command find-directory-buffer () ()
-  (let ((name (buffer-filename)))
-    (and
-     (switch-to-buffer
-      (find-file-buffer (lem-core/commands/file::directory-for-file-or-lose (buffer-directory))))
-     ;; check buffer name exists as a file.
-     (when name
-       (search-forward (current-point) name)
-       (window-recenter (current-window))
-       (backward-char (length name))))))
-
-(define-key *global-keymap*
-  "C-x C-j"
-  'find-directory-buffer)
 
 ;; ### imenu
 
