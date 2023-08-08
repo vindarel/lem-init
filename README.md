@@ -214,6 +214,13 @@ go to end of buffer
   "C-x «"
   'lem-core/commands/window:split-active-window-vertically)
 
+(define-key *global-keymap* "C-PageDown"
+  'lem/frame-multiplexer:frame-multiplexer-next)
+
+(define-key *global-keymap* "C-PageUp"
+  'lem/frame-multiplexer:frame-multiplexer-prev)
+
+```
 ```
 vi visual mode
 
