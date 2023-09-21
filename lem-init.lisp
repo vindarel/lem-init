@@ -303,6 +303,14 @@ Issues in Lem 2.0:
 ;; Load a utility from another file, too short for a PR:
 (load "~/dotfiles/lem/time-stamp.lisp")
 
+;; Fix a slow down for me, see
+;; https://github.com/lem-project/lem/issues/1092
+(defun lem-sdl2::call-with-renderer (function)
+  (uiop:format! t "~%running Lem with my SDL2 slowdown fix, issue 1092…~%")
+  (bt:with-recursive-lock-held ((display-mutex *display*))
+    (funcall function)))
+
+
 ;; Now you can do M-x time-stamp to print the timestamp of the day, in the org-mode format:
 ;; <2023-07-05 Wed>
 
