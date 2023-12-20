@@ -1,3 +1,4 @@
+
 #| # My Lem init file
 > For Lem 2.0
 
@@ -13,7 +14,7 @@ Impressions:
 * **Lem has a new git interface!** that I started developping. See changes, stage a file, the hunk of a diff, interactive rebase for the best scenario… cool but needs loads of work.
 
 Installation:
-copy or symlink to ~/.lem/init.lisp
+copy or symlink to ~/.config/lem/init.lisp (since Lem 2.2) or ~/.lem/init.lisp.
 
 I start Lem like this:
 ```
@@ -26,6 +27,8 @@ $ cd lem/
 * M-j newline with comment (if inside comment)
 * M-h select paragraph
 * imenu functionality => see very poor but useful snippet below.
+* C-x C-j to open directory mode on the current file => added upstream.
+* project-aware commands => the basics added upstream.
 
 In Lisp mode:
  * C-~ sync file package with REPL
@@ -74,7 +77,7 @@ Issues in Lem 2.0:
 (lem-vi-mode:vi-mode)
 
 ;; Start the Lisp REPL in vi insert mode (commit 23-8-8)
-(add-hook lem-lisp-mode:*lisp-repl-mode-hook* 'lem-vi-mode/commands:vi-insert)
+;; (add-hook lem-lisp-mode:*lisp-repl-mode-hook* 'lem-vi-mode/commands:vi-insert)
 
 ;;;
 ;;; ## Some helper functions, bound to keys below.
@@ -90,7 +93,7 @@ Issues in Lem 2.0:
   (lem-vi-mode/word:forward-word-end (current-point) n t)
   (skip-whitespace-forward (current-point) t))
 
-(define-key lem-vi-mode:*command-keymap*
+(define-key lem-vi-mode:*normal-keymap*
   "g a"
   'beginning-of-defun-on-function)
   ;; 'lem/detective:detective-search)  ;; <2023-07-05 Wed> detective doesn't currently work with define-command and define-key definitions.
@@ -102,7 +105,7 @@ Issues in Lem 2.0:
   (lem-vi-mode/word:forward-word-end (current-point) n t)
   (skip-whitespace-forward (current-point) t))
 
-(define-key lem-vi-mode:*command-keymap*
+(define-key lem-vi-mode:*normal-keymap*
   "g e"
   'end-of-defun-on-function)
 
@@ -110,28 +113,28 @@ Issues in Lem 2.0:
 ;; vi-mode doesn't have "+" and "-" keys => sent upstream.
 ;;
 ;; dev note: we could find the variables and command names easily thanks to Lem's autocompletion.
-(define-key lem-vi-mode:*command-keymap*
+(define-key lem-vi-mode:*normal-keymap*
   "-"
   'lem-vi-mode/commands:vi-previous-line)
 
-(define-key lem-vi-mode:*command-keymap*
+(define-key lem-vi-mode:*normal-keymap*
   "+"
   'lem-vi-mode/commands:vi-next-line)
 
-(define-key lem-vi-mode:*command-keymap*
+(define-key lem-vi-mode:*normal-keymap*
   "q"
   'kill-buffer)
 
-(define-key lem-vi-mode:*command-keymap*
+(define-key lem-vi-mode:*normal-keymap*
   "Space"
   'lem-vi-mode/commands:vi-forward-char)
 
-(define-key lem-vi-mode:*command-keymap*
+(define-key lem-vi-mode:*normal-keymap*
   "("
   'backward-paragraph)
 
 ;; sent upstream.
-(define-key lem-vi-mode:*command-keymap*
+(define-key lem-vi-mode:*normal-keymap*
   ")"
   'forward-paragraph)
 
@@ -148,35 +151,40 @@ Issues in Lem 2.0:
 ;; ## More keys of my liking (bépo keybboard)
 ;;
 ;; Most make sense for a bépo keyboard only.
-(define-key lem-vi-mode:*command-keymap*
+(define-key lem-vi-mode:*normal-keymap*
   "' b"
   'select-buffer)
 
 ;; switch buffers
-(define-key lem-vi-mode:*command-keymap*
+(define-key lem-vi-mode:*normal-keymap*
   "' «"
   'previous-buffer)
 
-(define-key lem-vi-mode:*command-keymap*
+(define-key lem-vi-mode:*normal-keymap*
   "' »"
   'next-buffer)
 
 ;; go to end of buffer
-(define-key lem-vi-mode:*command-keymap*
+(define-key lem-vi-mode:*normal-keymap*
   ">"
   'move-to-end-of-buffer)
 
-(define-key lem-vi-mode:*command-keymap*
+(define-key lem-vi-mode:*normal-keymap*
   "<"
   'move-to-beginning-of-buffer)
 
-(define-key lem-vi-mode:*command-keymap*
+(define-key lem-vi-mode:*normal-keymap*
   "M-»"
   'move-to-end-of-buffer)
 
-(define-key lem-vi-mode:*command-keymap*
+(define-key lem-vi-mode:*normal-keymap*
   "M-«"
   'move-to-beginning-of-buffer)
+
+;;; vi visual mode
+(define-key lem-vi-mode/visual::*visual-keymap*
+  "x"
+  'lem:kill-region)
 
 (define-key *global-keymap*
   "C-x \""
@@ -207,36 +215,7 @@ Issues in Lem 2.0:
 (define-key *global-keymap* "C-PageUp"
   'lem/frame-multiplexer:frame-multiplexer-prev)
 
-;; ## Find file directory
 
-;;; A function I use a lot, proposed upstream but not (yet) merged.
-;;; https://github.com/lem-project/lem/pull/868
-(define-key *global-keymap* "C-x C-j" 'find-file-directory)
-
-(define-command find-file-directory () ()
-  "Open this file's directory and place point on the filename."
-  (let ((fullpath (buffer-filename)))
-    (cond
-      ((null fullpath)
-       (message "No file at point"))
-      (t
-       (switch-to-buffer
-        (find-file-buffer (lem-core/commands/file::directory-for-file-or-lose (buffer-directory))))
-       (let ((filename (file-namestring fullpath)))
-         (search-forward (current-point) filename)
-         (window-recenter (current-window))
-         (character-offset (current-point) (* -1 (length filename))))))))
-
-
-;;; vi visual mode
-(define-key lem-vi-mode/visual::*visual-keymap*
-  "x"
-  'lem:kill-region)
-
-;;;
-;;; ## Project
-;;;
-;;; Project-aware commands (M-x project-find-file) sent upstream!
 
 ;; Undo:
 ;; this doesn't work, it understands C-space.
@@ -244,7 +223,7 @@ Issues in Lem 2.0:
   "C-_"
   'undo)
 
-;; ### imenu
+;; ## imenu
 
 ;; A very poor man's imenu.
 (defun buffer-headings (txt)
@@ -291,25 +270,44 @@ Issues in Lem 2.0:
       (open-external-file pathname)
       (call-next-method)))
 
-;; ### Transparent background! ^^
-(sdl2-ffi.functions:sdl-set-window-opacity (lem-sdl2::display-window lem-sdl2::*display*) 0.9)
+;; ###Transparent background! ^^
+;(sdl2-ffi.functions:sdl-set-window-opacity (lem-sdl2::display-window lem-sdl2/display::*display*) 0.9)
+(sdl2-ffi.functions:sdl-set-window-opacity (lem-sdl2/display::display-window lem-sdl2/display::*display*) 1.0)
 
 ;; I want to see my logs on the terminal output:
 (log:config :info)
 
-;; Load legit. It is not loaded by default, waiting for power testers.
+;; ### Load legit.
+;; It is not loaded by default, waiting for power testers.
 (ql:quickload "lem/legit")
+
+;; blah
 
 ;; Load a utility from another file, too short for a PR:
 (load "~/dotfiles/lem/time-stamp.lisp")
 
 ;; Fix a slow down for me, see
 ;; https://github.com/lem-project/lem/issues/1092
-(defun lem-sdl2::call-with-renderer (function)
-  (uiop:format! t "~%running Lem with my SDL2 slowdown fix, issue 1092…~%")
-  (bt:with-recursive-lock-held ((display-mutex *display*))
-    (funcall function)))
+;; This crashes Lem: (so, keep a patch in my local git…)
+;; (defun my/lem-sdl2--call-with-renderer (function)
+;;   (uiop:format! t "~%running Lem with my SDL2 slowdown fix, issue 1092…~%")
+;;   (bt:with-recursive-lock-held ((display-mutex *display*))
+;;     (funcall function)))
 
+;; (setf (symbol-function 'lem-sdl2::call-with-renderer) #'my/lem-sdl2--call-with-renderer)
+
+;; ### Suspend ncurses Lem (C-z)
+
+(define-command suspend-lem () ()
+  ;; @fukamachi
+  ;; https://github.com/lem-project/lem/issues/306
+  (when (find-package 'charms/ll)
+    (uiop:symbol-call 'charms/ll 'endwin)  ; the package doesn't exist in the SDL version.
+    (sb-posix:kill (sb-posix:getpid) sb-posix:sigtstp)))
+
+(define-key *global-keymap* "C-z C-z" 'suspend-lem)
+
+;; ### Other settings
 
 ;; Now you can do M-x time-stamp to print the timestamp of the day, in the org-mode format:
 ;; <2023-07-05 Wed>
