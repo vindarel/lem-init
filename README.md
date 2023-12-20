@@ -307,7 +307,7 @@ collect (list line i))
       (call-next-method)))
 
 ```
-###Transparent background! ^^
+### Transparent background! ^^
 
 ```lisp
 ;(sdl2-ffi.functions:sdl-set-window-opacity (lem-sdl2::display-window lem-sdl2/display::*display*) 0.9)
@@ -325,13 +325,6 @@ It is not loaded by default, waiting for power testers.
 
 ```lisp
 (ql:quickload "lem/legit")
-
-```
-blah
-Load a utility from another file, too short for a PR:
-
-```lisp
-(load "~/dotfiles/lem/time-stamp.lisp")
 
 ```
 Fix a slow down for me, see
@@ -360,6 +353,12 @@ https://github.com/lem-project/lem/issues/306
 
 ```
 ### Other settings
+Load a utility from another file, too short for a PR:
+
+```lisp
+(load "~/dotfiles/lem/time-stamp.lisp")
+
+```
 Now you can do M-x time-stamp to print the timestamp of the day, in the org-mode format:
 <2023-07-05 Wed>
 

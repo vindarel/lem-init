@@ -270,7 +270,7 @@ Issues in Lem 2.0:
       (open-external-file pathname)
       (call-next-method)))
 
-;; ###Transparent background! ^^
+;; ### Transparent background! ^^
 ;(sdl2-ffi.functions:sdl-set-window-opacity (lem-sdl2::display-window lem-sdl2/display::*display*) 0.9)
 (sdl2-ffi.functions:sdl-set-window-opacity (lem-sdl2/display::display-window lem-sdl2/display::*display*) 1.0)
 
@@ -281,14 +281,10 @@ Issues in Lem 2.0:
 ;; It is not loaded by default, waiting for power testers.
 (ql:quickload "lem/legit")
 
-;; blah
-
-;; Load a utility from another file, too short for a PR:
-(load "~/dotfiles/lem/time-stamp.lisp")
-
 ;; Fix a slow down for me, see
 ;; https://github.com/lem-project/lem/issues/1092
 ;; This crashes Lem: (so, keep a patch in my local git…)
+
 ;; (defun my/lem-sdl2--call-with-renderer (function)
 ;;   (uiop:format! t "~%running Lem with my SDL2 slowdown fix, issue 1092…~%")
 ;;   (bt:with-recursive-lock-held ((display-mutex *display*))
@@ -308,6 +304,9 @@ Issues in Lem 2.0:
 (define-key *global-keymap* "C-z C-z" 'suspend-lem)
 
 ;; ### Other settings
+
+;; Load a utility from another file, too short for a PR:
+(load "~/dotfiles/lem/time-stamp.lisp")
 
 ;; Now you can do M-x time-stamp to print the timestamp of the day, in the org-mode format:
 ;; <2023-07-05 Wed>
