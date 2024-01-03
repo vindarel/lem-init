@@ -272,6 +272,7 @@ Issues in Lem 2.0:
 
 ;; ### Transparent background! ^^
 ;(sdl2-ffi.functions:sdl-set-window-opacity (lem-sdl2::display-window lem-sdl2/display::*display*) 0.9)
+#+lem-sdl2
 (sdl2-ffi.functions:sdl-set-window-opacity (lem-sdl2/display::display-window lem-sdl2/display::*display*) 1.0)
 
 ;; I want to see my logs on the terminal output:
@@ -294,6 +295,7 @@ Issues in Lem 2.0:
 
 ;; ### Suspend ncurses Lem (C-z)
 
+#+lem-ncurses
 (define-command suspend-lem () ()
   ;; @fukamachi
   ;; https://github.com/lem-project/lem/issues/306
