@@ -4,8 +4,8 @@
 
 Written in literate programing with [erudite](https://github.com/mmontone/erudite) (see below).
 
-* new website: https://lem-project.github.io/lem-page/
-* all keys: https://lem-project.github.io/lem-page/usage/keybindings/ (missing some modes, like Lisp mode)
+* new website: https://lem-project.github.io/
+* all keys: https://lem-project.github.io/usage/keybindings/ (missing some modes, like Lisp mode)
 
 Impressions:
 * Lem has a shitload of features! paredit, tabs, treeview, tetris…
@@ -19,7 +19,7 @@ copy or symlink to ~/.config/lem/init.lisp (since Lem 2.2) or ~/.lem/init.lisp.
 I start Lem like this:
 ```
 $ cd lem/
- CL_SOURCE_REGISTRY=$(pwd)// ros -s lem-sdl2 -e '(lem:lem)'
+ CL_SOURCE_REGISTRY=$(pwd)// ros -s lem-sdl2 -e '(progn (lem:lem) (uiop:quit))'
 ```
 
 ## The keys I miss so far
@@ -33,17 +33,17 @@ $ cd lem/
 In Lisp mode:
  * C-~ sync file package with REPL
  * C-c C-y call function at point in the REPL, with package prefix.
- * REPL: C-c C-p go to previous prompt => done in main (end of June, 2023)
- * Inspecting literal objects => done in main (end of June, 2023)
  * marks (m <letter> and '<letter> (quote))
  * little issue with highlighting of parens in vi insert mode, on the last paren.
+ * REPL: C-c C-p go to previous prompt => done in main (end of June, 2023)
+ * Inspecting literal objects => done in main (end of June, 2023)
 
 In vi-mode:
 * OK now, some keys sent upstream.
 
 Issues in Lem 2.0:
-* I can't type backslash or any key with Alt Gr (right Alt key) => fixed upstream
 * typing an accentuated letter (french é) ppriints sa spacee after it and sorta repaeat keys O_o
+* I can't type backslash or any key with Alt Gr (right Alt key) => fixed upstream => un-fixed so it works best for more people. What's my fix now?
 
 ## Things than Lem does better than Emacs
 
@@ -58,11 +58,11 @@ Issues in Lem 2.0:
 ;;;
 
 ;; We want some more CL libraries.
-(pushnew "/home/vince/projets/cl-str/" asdf:*central-registry* :test #'equal)
+(pushnew "/path/to/lisp/project/" asdf:*central-registry* :test #'equal)
 
 ;; @ignore
 ;; (eval-when (:compile-toplevel :load-toplevel :execute)
-;;   (ql:quickload "str"))
+;;   (ql:quickload "myproject"))
 ;; @end ignore
 
 ;;; ## Starting up
@@ -231,7 +231,7 @@ Issues in Lem 2.0:
       for parts = (str:split " " line)
       for i = 1 then (incf i)
       if (str:starts-with-p "(def" line)
-      ;; collect (list line i))
+      ; collect (list line i))
         collect line))
 
 (defun prompt-for-heading ()
@@ -282,14 +282,16 @@ Issues in Lem 2.0:
 ;; It is not loaded by default, waiting for power testers.
 (ql:quickload "lem/legit")
 
+(setf (config :prompt-for-commit-abort) nil)
+
 ;; Fix a slow down for me, see
 ;; https://github.com/lem-project/lem/issues/1092
 ;; This crashes Lem: (so, keep a patch in my local git…)
 
-;; (defun my/lem-sdl2--call-with-renderer (function)
-;;   (uiop:format! t "~%running Lem with my SDL2 slowdown fix, issue 1092…~%")
-;;   (bt:with-recursive-lock-held ((display-mutex *display*))
-;;     (funcall function)))
+; (defun my/lem-sdl2--call-with-renderer (function)
+;   (uiop:format! t "~%running Lem with my SDL2 slowdown fix, issue 1092…~%")
+;   (bt:with-recursive-lock-held ((display-mutex *display*))
+;     (funcall function)))
 
 ;; (setf (symbol-function 'lem-sdl2::call-with-renderer) #'my/lem-sdl2--call-with-renderer)
 
@@ -297,21 +299,21 @@ Issues in Lem 2.0:
 
 #+lem-ncurses
 (define-command suspend-lem () ()
-  ;; @fukamachi
-  ;; https://github.com/lem-project/lem/issues/306
+  ; @fukamachi
+  ; https://github.com/lem-project/lem/issues/306
   (when (find-package 'charms/ll)
     (uiop:symbol-call 'charms/ll 'endwin)  ; the package doesn't exist in the SDL version.
     (sb-posix:kill (sb-posix:getpid) sb-posix:sigtstp)))
 
 (define-key *global-keymap* "C-z C-z" 'suspend-lem)
 
-;; ### Other settings
+;; ### Other settings - timestamps
 
 ;; Load a utility from another file, too short for a PR:
 (load "~/dotfiles/lem/time-stamp.lisp")
 
-;; Now you can do M-x time-stamp to print the timestamp of the day, in the org-mode format:
-;; <2023-07-05 Wed>
+;; Now you can do `M-x time-stamp` to print the timestamp of the day, in the org-mode format:
+;; "<2023-07-05 Wed>"
 
 #|
 ## Erudite: produce this README.md
