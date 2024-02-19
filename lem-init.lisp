@@ -329,5 +329,6 @@ NB: I had to tweak cl-template's .asd definition to `:cl-template` instead of `#
 ## See also
 
 * https://gitlab.com/sasanidas/lem-config/-/blob/master/init.lisp
+* https://github.com/garlic0x1/.lem
 
 |#
