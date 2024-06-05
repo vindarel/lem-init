@@ -48,6 +48,7 @@ Issues in Lem 2.0:
 * default auto-completion UI (but not the algorithm yet)
 * ease of development for CL, commands discovery
 * sorting files by name, mtime AND by size (with human-readable format) in directory-mode
+* interactive markdown mode with multiple-major-modes (evaluate Lisp or C code inside code blocks), interactive markdown preview in a browser built-in
 
 ## Load more CL libraries
 We want some more CL libraries.
