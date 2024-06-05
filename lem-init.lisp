@@ -42,7 +42,6 @@ In vi-mode:
 * OK now, some keys sent upstream.
 
 Issues in Lem 2.0:
-* typing an accentuated letter (french é) ppriints sa spacee after it and sorta repaeat keys O_o
 * I can't type backslash or any key with Alt Gr (right Alt key) => fixed upstream => un-fixed so it works best for more people. What's my fix now?
 
 ## Things than Lem does better than Emacs
