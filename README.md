@@ -88,7 +88,7 @@ I want quick movement functions to go to the previous or next definition (functi
 Lem has beginning- and end-of-defun, but a repetitive call doesn't go outside the function definition.
 
 ```lisp
-(define-command beginning-of-defun-on-function (n) ("p")
+(define-command beginning-of-defun-on-function (n) (:universal)
   "Go to the beginning of defun, the point on the function name."
   ; if n < 0, go to end of defun.
   (previous-line)
@@ -104,7 +104,7 @@ Lem has beginning- and end-of-defun, but a repetitive call doesn't go outside th
 
 ```lisp
 
-(define-command end-of-defun-on-function (n) ("p")
+(define-command end-of-defun-on-function (n) (:universal)
   "Go to the next defun, the point on the function name."
   (lem/language-mode::end-of-defun n)
   (search-forward-regexp (current-point) "^\\(")

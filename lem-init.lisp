@@ -85,7 +85,7 @@ Issues in Lem 2.0:
 
 ;; I want quick movement functions to go to the previous or next definition (function, or anything really).
 ;; Lem has beginning- and end-of-defun, but a repetitive call doesn't go outside the function definition.
-(define-command beginning-of-defun-on-function (n) ("p")
+(define-command beginning-of-defun-on-function (n) (:universal)
   "Go to the beginning of defun, the point on the function name."
   ; if n < 0, go to end of defun.
   (previous-line)
@@ -98,7 +98,7 @@ Issues in Lem 2.0:
   'beginning-of-defun-on-function)
   ;; 'lem/detective:detective-search)  ;; <2023-07-05 Wed> detective doesn't currently work with define-command and define-key definitions.
 
-(define-command end-of-defun-on-function (n) ("p")
+(define-command end-of-defun-on-function (n) (:universal)
   "Go to the next defun, the point on the function name."
   (lem/language-mode::end-of-defun n)
   (search-forward-regexp (current-point) "^\\(")
