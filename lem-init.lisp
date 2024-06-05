@@ -315,6 +315,21 @@ Issues in Lem 2.0:
 ;; Now you can do `M-x time-stamp` to print the timestamp of the day, in the org-mode format:
 ;; "<2023-07-05 Wed>"
 
+;; ### Choose the position of the completion prompt (new in May, 2024)
+
+(setf lem-core::*default-prompt-gravity* :bottom-display)
+(setf lem/prompt-window::*prompt-completion-window-gravity* :horizontally-above-window)
+(setf lem/prompt-window::*fill-width* t)
+
+;; and show the completion list directly, without a first press on TAB:
+(add-hook *prompt-after-activate-hook*
+          (lambda ()
+            (call-command 'lem/prompt-window::prompt-completion nil)))
+
+(add-hook *prompt-deactivate-hook*
+          (lambda ()
+            (lem/completion-mode:completion-end)))
+
 #|
 ## Erudite: produce this README.md
 
