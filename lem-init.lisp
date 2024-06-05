@@ -76,7 +76,7 @@ Issues in Lem 2.0:
 (lem-vi-mode:vi-mode)
 
 ;; Start the Lisp REPL in vi insert mode (commit 23-8-8)
-;; (add-hook lem-lisp-mode:*lisp-repl-mode-hook* 'lem-vi-mode/commands:vi-insert)
+(add-hook lem-lisp-mode:*lisp-repl-mode-hook* 'lem-vi-mode/commands:vi-insert)
 
 ;;;
 ;;; ## Some helper functions, bound to keys below.
