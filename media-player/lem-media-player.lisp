@@ -14,7 +14,8 @@
   )
 
 (define-command media-player-play () ()
-  (let ((file (lem/directory-mode::get-pathname (lem:current-point))))
+  "Play the file at point."
+  (let ((file (lem/directory-mode::get-pathname (current-point))))
     (ensure-top-level-player)
     (play file *player*)))
 

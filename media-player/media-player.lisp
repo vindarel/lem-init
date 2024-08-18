@@ -1,10 +1,17 @@
 
 (uiop:define-package :media-player
-    (:use :cl))
+    (:use :cl)
+  (:export
+   #:*player*
+   #:ensure-top-level-player
+   #:player
+   #:play
+   #:stop
+   #:toggle-play/pause))
 
 (in-package :media-player)
 
-;TODO:
+;; TODO: .asd
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (ql:quickload "str"))
 
@@ -24,9 +31,6 @@
 ;; We should have them with *earmuffs* though.
 (defmacro defcustom (name val doc &body rest)
   (declare (ignore rest))
-  `(defparameter ,name ,val ,doc))
-
-(defmacro defvar-local (name val doc)
   `(defparameter ,name ,val ,doc))
 
 ;;;
@@ -148,6 +152,26 @@ Used to remember button position across files in continuous playback.")
           *mpv-args* args))
 
 (defun play (file &optional player)
+  "Play this file in the background.
+
+  Return the PLAYER instance.
+
+  The PLAYER instance is optional. If no one is given, we create one and return it.
+
+  If this player's process is alive, it is probably reading a media file already, so we send a stop command before playing this file.
+
+  It is possible to read many files at the same time by using different PLAYER objects.
+
+  Usage:
+
+    (play \"/path/to/file.mp3\")  ;; => #<PLAYER {a}>
+
+    (play \"/path/to/file.mp3\" (make-instance 'player))  ;; => #<PLAYER {b}>
+
+
+  See also:
+
+    TOGGLE-PLAY/PAUSE, STOP, QUIT."
   ;; Ensure we have a player object
   ;; (we can quickly throw "t" or "nil" during development.
   (unless (equal (type-of player) 'player)
@@ -155,8 +179,11 @@ Used to remember button position across files in continuous playback.")
 
   ;; If we get a pathname, get the file name as string.
   ;; Play!
-  (setf (process player)
-        (uiop:launch-program (mpv-command (uiop:native-namestring file))))
+  (with-accessors ((p process)) player
+    ;; but stop the current process if it's alive.
+    (when (uiop:process-alive-p p)
+      (stop player))
+    (setf p (uiop:launch-program (mpv-command (uiop:native-namestring file)))))
   player)
 
 (defvar *debug* nil)
