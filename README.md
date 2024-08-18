@@ -13,6 +13,7 @@ What's in my config:
 * starts in vi-mode and other configuration snippets
 * a command to insert an org-mode-like timestamp of today
 * a couple functions to play a media file and toggle pause/play.
+  * `M-x media-player-play` on a file in directory mode, `-toggle` and `-stop`.
 
 
 Impressions:
