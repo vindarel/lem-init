@@ -3,8 +3,17 @@
 
 Written in literate programing with [erudite](https://github.com/mmontone/erudite) (see below).
 
-* new website: https://lem-project.github.io/
+* Lem's new website: https://lem-project.github.io/
 * all keys: https://lem-project.github.io/usage/keybindings/ (missing some modes, like Lisp mode)
+
+What's in my config:
+
+* nothing you *need*, Lem has good defaults.
+* keybindings for a bépo keyboard.
+* starts in vi-mode and other configuration snippets
+* a command to insert an org-mode-like timestamp of today
+* a couple functions to play a media file and toggle pause/play.
+
 
 Impressions:
 * Lem has a shitload of features! paredit, tabs, treeview, tetris…
