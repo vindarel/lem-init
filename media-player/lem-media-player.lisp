@@ -20,7 +20,7 @@
     (play file *player*)))
 
 (define-command media-player-toggle () ()
-  (toggle-play/pause *player*))
+  (toggle-pause *player*))
 
 (define-command media-player-stop () ()
   (stop *player*))
