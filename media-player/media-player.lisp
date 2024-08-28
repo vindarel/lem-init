@@ -127,6 +127,9 @@ for configuration."
   (unless (equal (type-of player) 'player)
     (setf player (make-instance 'player)))
 
+  ;; warn: print makes the command error-out in Lem.
+  ;;(print player)
+
   ;; Play!
   (with-accessors ((p process)) player
     ;; but stop the current process if it's alive.
