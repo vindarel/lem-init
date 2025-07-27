@@ -34,7 +34,7 @@ $ cd lem/
 In Lisp mode:
  * C-c C-y call function at point in the REPL, with package prefix.
  * little issue with highlighting of parens in vi insert mode, on the last paren.
- * C-~ sync file package with REPL => done in main, <2024-07-30>
+ * (fixed) C-~ sync file package with REPL => done in main, <2024-07-30>
  * (fixed) REPL: C-c C-p go to previous prompt => done in main (end of June, 2023) (it's C-c p)
  * (fixed) Inspecting literal objects => done in main (end of June, 2023)
 
