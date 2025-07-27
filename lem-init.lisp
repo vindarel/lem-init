@@ -26,23 +26,23 @@ $ cd lem/
 
 * M-j newline with comment (if inside comment)
 * M-h select paragraph
-* imenu functionality => see very poor but useful snippet below.
-* C-x C-j to open directory mode on the current file => added upstream.
-* project-aware commands => the basics added upstream.
+* (fixed) imenu functionality => see very poor but useful snippet below. See M-x detective-all, doing alright.
+* (fixed) C-x C-j to open directory mode on the current file => added upstream.
+* (fixed) project-aware commands => the basics added upstream.
 
 In Lisp mode:
  * C-c C-y call function at point in the REPL, with package prefix.
  * marks (m <letter> and '<letter> (quote))
  * little issue with highlighting of parens in vi insert mode, on the last paren.
  * C-~ sync file package with REPL => done in main, <2024-07-30>
- * REPL: C-c C-p go to previous prompt => done in main (end of June, 2023)
- * Inspecting literal objects => done in main (end of June, 2023)
+ * (fixed) REPL: C-c C-p go to previous prompt => done in main (end of June, 2023) (it's C-c p)
+ * (fixed) Inspecting literal objects => done in main (end of June, 2023)
 
 In vi-mode:
-* OK now, some keys sent upstream.
+* OK now, I had to send some keys upstream, there have been many more contributions, the vi-mode is now very complete to my taste.
 
 Issues in Lem 2.0:
-* I can't type backslash or any key with Alt Gr (right Alt key) => fixed upstream => un-fixed so it works best for more people. What's my fix now?
+* (fixed!) I can't type backslash or any key with Alt Gr (right Alt key), such as ~, and I can't have my undo on C-_ => fixed upstream => un-fixed so it works best for more people. => fixed again, somewhere 2024.
 
 ## Things than Lem does better than Emacs
 
@@ -77,7 +77,7 @@ Issues in Lem 2.0:
 (lem-vi-mode:vi-mode)
 
 ;; Start the Lisp REPL in vi insert mode (commit 23-8-8)
-(add-hook lem-lisp-mode:*lisp-repl-mode-hook* 'lem-vi-mode/commands:vi-insert)
+;; (add-hook lem-lisp-mode:*lisp-repl-mode-hook* 'lem-vi-mode/commands:vi-insert)
 
 ;;;
 ;;; ## Some helper functions, bound to keys below.
@@ -169,6 +169,7 @@ Issues in Lem 2.0:
   ">"
   'move-to-end-of-buffer)
 
+
 (define-key lem-vi-mode:*normal-keymap*
   "<"
   'move-to-beginning-of-buffer)
@@ -209,13 +210,19 @@ Issues in Lem 2.0:
   "M-t"
   'next-line)
 
+;; don't work or not in the terminal?
 (define-key *global-keymap* "C-PageDown"
   'lem/frame-multiplexer:frame-multiplexer-next)
 
 (define-key *global-keymap* "C-PageUp"
   'lem/frame-multiplexer:frame-multiplexer-prev)
 
-
+;; yes:
+(define-key lem-vi-mode:*normal-keymap* "C-n" 'lem/frame-multiplexer:frame-multiplexer-next)
+(define-key lem-vi-mode:*normal-keymap* "C-p" 'lem/frame-multiplexer:frame-multiplexer-prev)
+;; nope?
+(define-key *global-keymap* "C-p" 'lem/frame-multiplexer:frame-multiplexer-prev)
+(define-key *global-keymap* "C-n" 'lem/frame-multiplexer:frame-multiplexer-next)
 
 ;; Undo:
 ;; this doesn't work, it understands C-space.
@@ -271,16 +278,23 @@ Issues in Lem 2.0:
       (call-next-method)))
 
 ;; ### Transparent background! ^^
-;(sdl2-ffi.functions:sdl-set-window-opacity (lem-sdl2::display-window lem-sdl2/display::*display*) 0.9)
+; (sdl2-ffi.functions:sdl-set-window-opacity (lem-sdl2/display::display-window lem-sdl2/display::*display*) 0.9)
 #+lem-sdl2
-(sdl2-ffi.functions:sdl-set-window-opacity (lem-sdl2/display::display-window lem-sdl2/display::*display*) 1.0)
+;(sdl2-ffi.functions:sdl-set-window-opacity (lem-sdl2/display::display-window lem-sdl2/display::*display*) 1.0)
 
 ;; I want to see my logs on the terminal output:
 (log:config :info)
 
-;; ### Load legit.
-;; It is not loaded by default, waiting for power testers.
-(ql:quickload "lem/legit")
+;; ### Insert a file name (with completion)
+
+(define-command insert-file-name (filename) ((:file "Insert file name:"))
+  "Inserts a filename at point."
+  (insert-string (current-point) filename))
+
+
+;; ### Configure legit
+;; Legit is now included and loaded by default.
+;; I only set one parameter: don't prompt for confirmation when aborting a commit message.
 
 (setf (config :prompt-for-commit-abort) nil)
 
@@ -317,18 +331,41 @@ Issues in Lem 2.0:
 
 ;; ### Choose the position of the completion prompt (new in May, 2024)
 
-(setf lem-core::*default-prompt-gravity* :bottom-display)
-(setf lem/prompt-window::*prompt-completion-window-gravity* :horizontally-above-window)
-(setf lem/prompt-window::*fill-width* t)
+;(setf lem-core::*default-prompt-gravity* :bottom-display)
+;(setf lem/prompt-window::*prompt-completion-window-gravity* :horizontally-above-window)
+;(setf lem/prompt-window::*fill-width* t)
 
 ;; and show the completion list directly, without a first press on TAB:
-(add-hook *prompt-after-activate-hook*
-          (lambda ()
-            (call-command 'lem/prompt-window::prompt-completion nil)))
+;(add-hook *prompt-after-activate-hook*
+;          (lambda ()
+;            (call-command 'lem/prompt-window::prompt-completion nil)))
 
-(add-hook *prompt-deactivate-hook*
-          (lambda ()
-            (lem/completion-mode:completion-end)))
+;(add-hook *prompt-deactivate-hook*
+;          (lambda ()
+;            (lem/completion-mode:completion-end)))
+
+;; ### Terminal commands
+;; (by cxxxr on Discord)
+
+#|
+(in-package :lem-terminal/terminal-mode)
+(defun send-string-and-newline (terminal string)
+  (loop :for character :across string
+        :do (terminal:input-character terminal
+                                      character))
+  (terminal:input-key terminal ffi::vterm_key_enter))
+
+(define-command terminal-send-command (string) ((:string "String: "))
+  (let ((buffer (terminal:find-terminal-buffer)))
+    (when buffer
+      (send-string-and-newline (buffer-terminal buffer) string))))
+|#
+
+;; ## media-player (POC)
+
+(format t "---- loading media-player…~&")
+(load "~/dotfiles/lem/media-player/media-player.lisp")
+(load "~/dotfiles/lem/media-player/lem-media-player.lisp")
 
 #|
 ## Erudite: produce this README.md
