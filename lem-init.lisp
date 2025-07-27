@@ -26,13 +26,14 @@ $ cd lem/
 
 * M-j newline with comment (if inside comment)
 * M-h select paragraph
+* marks (m <letter> and '<letter> (quote))
+  * as of 2025 there is now `mark-set` (C-space) and `exchange-point-mark` (C-x C-x)
 * (fixed) imenu functionality => see very poor but useful snippet below. See M-x detective-all, doing alright.
 * (fixed) C-x C-j to open directory mode on the current file => added upstream.
 * (fixed) project-aware commands => the basics added upstream.
 
 In Lisp mode:
  * C-c C-y call function at point in the REPL, with package prefix.
- * marks (m <letter> and '<letter> (quote))
  * little issue with highlighting of parens in vi insert mode, on the last paren.
  * C-~ sync file package with REPL => done in main, <2024-07-30>
  * (fixed) REPL: C-c C-p go to previous prompt => done in main (end of June, 2023) (it's C-c p)
