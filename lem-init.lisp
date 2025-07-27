@@ -25,9 +25,10 @@ $ cd lem/
 ## The keys I miss so far
 
 * M-j newline with comment (if inside comment)
-* M-h select paragraph
 * marks (m <letter> and '<letter> (quote))
   * as of 2025 there is now `mark-set` (C-space) and `exchange-point-mark` (C-x C-x)
+* (fixed) M-h select paragraph
+  * since Jan, 2025, there are paragraphs objects in vi-mode, we can do "vip" to select the current paragraph, and delete it.
 * (fixed) imenu functionality => see very poor but useful snippet below. See M-x detective-all, doing alright.
 * (fixed) C-x C-j to open directory mode on the current file => added upstream.
 * (fixed) project-aware commands => the basics added upstream.
