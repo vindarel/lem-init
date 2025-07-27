@@ -426,6 +426,17 @@ and show the completion list directly, without a first press on TAB:
     (when buffer
       (send-string-and-newline (buffer-terminal buffer) string))))
 ## media-player (POC)
+I started playing with a media player: rely on mpv and its inter-process communication to load files and send commands to the player. It's easy, it works great.
+
+We have commands from Lem to play files or directories: M-x media-player-play-directory RET select directory RET.
+
+Or, from a directory mode listing, M-x media-player-play or right-click -> play file.
+
+I'm trying to add context menu entries to access player controls from anywhere.
+We'll need a buffer with controls and hotkeys too.
+
+See https://github.com/vindarel/lem-media-player and https://dev.to/vindarel/common-lisp-a-command-line-interactive-terminal-application-in-2-lines-2gnb
+WARN: hardcoded paths below.
 
 ```lisp
 
