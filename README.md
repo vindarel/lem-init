@@ -341,6 +341,7 @@ I want to see my logs on the terminal output:
 ```lisp
 
 (define-command insert-file-name (filename) ((:file "Insert file name:"))
+  ;; MERGED upstream <2025-08-06 Wed>
   "Inserts a filename at point."
   (insert-string (current-point) filename))
 

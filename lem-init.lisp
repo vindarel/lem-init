@@ -289,9 +289,16 @@ Issues in Lem 2.0:
 
 ;; ### Insert a file name (with completion)
 
-(define-command insert-file-name (filename) ((:file "Insert file name:"))
-  "Inserts a filename at point."
-  (insert-string (current-point) filename))
+(define-command insert-file-name (filename &optional arg) ((:file "Insert file name:") :universal-nil)
+  "Prompt for a file and insert its full filename at the current point.
+
+   MERGED UPSTREAM <2025-08-06 Wed>
+
+  With universal argument C-u, print it inside double quotes."
+  (when filename
+    (when arg (insert-string (current-point) "\""))
+    (insert-string (current-point) filename)
+    (when arg (insert-string (current-point) "\""))))
 
 
 ;; ### Configure legit
